@@ -1,0 +1,8 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "bracketSpacing": true,
+  "requirePragma": true,
+  "vue/multi-word-component-names": 0,
+  "vueIndentScriptAndStyle": false
+}
