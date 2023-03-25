@@ -1,0 +1,1 @@
+import{y as r}from"./index.80a9f799.js";function n(o,e){return r({url:"/book/bookInfo/borrow/"+o+"/"+e,method:"get"})}function u(o){return r({url:"/borrowView/get",method:"get",params:o})}function b(o){return r({url:"/book/borrow/return/"+o,method:"delete"})}export{n as b,u as g,b as r};

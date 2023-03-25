@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.BorrowMapper">
+
+    <resultMap type="Borrow" id="BorrowResult">
+        <result property="borrowId"    column="borrow_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="bookName"    column="book_name"    />
+        <result property="borrowingTime"    column="borrowing_time"    />
+        <result property="remandDate"    column="remand_date"    />
+        <result property="modifiedTime"    column="modified_time"    />
+        <result property="borrowState"    column="borrow_state"    />
+    </resultMap>
+
+    <sql id="selectBorrowVo">
+        select borrow_id, user_id, user_name, book_id, book_name, borrowing_time, remand_date, modified_time, borrow_state from borrow
+    </sql>
+
+    <select id="selectBorrowList" parameterType="Borrow" resultMap="BorrowResult">
+        <include refid="selectBorrowVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="bookId != null "> and book_id = #{bookId}</if>
+            <if test="bookName != null  and bookName != ''"> and book_name like concat('%', #{bookName}, '%')</if>
+            <if test="borrowingTime != null "> and borrowing_time = #{borrowingTime}</if>
+            <if test="remandDate != null "> and remand_date = #{remandDate}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+            <if test="borrowState != null "> and borrow_state = #{borrowState}</if>
+        </where>
+        ORDER BY borrow_id DESC
+    </select>
+
+    <select id="selectBorrowByBorrowId" parameterType="Integer" resultMap="BorrowResult">
+        <include refid="selectBorrowVo"/>
+        where borrow_id = #{borrowId}
+    </select>
+
+
+    <insert id="insertBorrow" parameterType="Borrow" useGeneratedKeys="true" keyProperty="borrowId">
+        insert into borrow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="bookId != null">book_id,</if>
+            <if test="bookName != null and bookName != ''">book_name,</if>
+            <if test="borrowingTime != null">borrowing_time,</if>
+            <if test="remandDate != null">remand_date,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+            <if test="borrowState != null">borrow_state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="bookId != null">#{bookId},</if>
+            <if test="bookName != null and bookName != ''">#{bookName},</if>
+            <if test="borrowingTime != null">#{borrowingTime},</if>
+            <if test="remandDate != null">#{remandDate},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+            <if test="borrowState != null">#{borrowState},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBorrow" parameterType="Borrow">
+        update borrow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="bookName != null and bookName != ''">book_name = #{bookName},</if>
+            <if test="borrowingTime != null">borrowing_time = #{borrowingTime},</if>
+            <if test="remandDate != null">remand_date = #{remandDate},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+            <if test="borrowState != null">borrow_state = #{borrowState},</if>
+        </trim>
+        where borrow_id = #{borrowId}
+    </update>
+
+    <delete id="deleteBorrowByBorrowId" parameterType="Integer">
+        delete from borrow where borrow_id = #{borrowId}
+    </delete>
+
+    <delete id="deleteBorrowByBorrowIds" parameterType="String">
+        delete from borrow where borrow_id in
+        <foreach item="borrowId" collection="array" open="(" separator="," close=")">
+            #{borrowId}
+        </foreach>
+    </delete>
+    <update id="returnBookByIds" parameterType="String">
+        update borrow set borrow_state = 0
+        where borrow_id in
+        <foreach item="borrowIds" collection="array" open="(" separator="," close=")">
+            #{borrowIds}
+        </foreach>
+    </update>
+    <update id="returnBookByUser">
+        update borrow set borrow_state = 3
+        where borrow_id in
+        <foreach item="borrowIds" collection="array" open="(" separator="," close=")">
+            #{borrowIds}
+        </foreach>
+    </update>
+
+    <select id="selectBorrowByBookId" parameterType="int" resultMap="BorrowResult">
+        select *  from borrow a,(select max(borrow_id) as id from borrow where book_id = #{bookId} group by book_id ) b
+        where
+            a.borrow_id =b.id
+    </select>
+</mapper>

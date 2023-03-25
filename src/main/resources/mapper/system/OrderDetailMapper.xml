@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.OrderDetailMapper">
+    
+    <resultMap type="OrderDetail" id="OrderDetailResult">
+        <result property="orderDetailId"    column="order_detail_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="productCnt"    column="product_cnt"    />
+        <result property="productPrice"    column="product_price"    />
+        <result property="weight"    column="weight"    />
+        <result property="feeMoney"    column="fee_money"    />
+        <result property="modifiedTime"    column="modified_time"    />
+    </resultMap>
+
+    <sql id="selectOrderDetailVo">
+        select order_detail_id, order_id, product_id, product_name, product_cnt, product_price, weight, fee_money, modified_time from order_detail
+    </sql>
+
+    <select id="selectOrderDetailList" parameterType="OrderDetail" resultMap="OrderDetailResult">
+        <include refid="selectOrderDetailVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="productCnt != null "> and product_cnt = #{productCnt}</if>
+            <if test="productPrice != null "> and product_price = #{productPrice}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="feeMoney != null "> and fee_money = #{feeMoney}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderDetailByOrderDetailId" parameterType="Integer" resultMap="OrderDetailResult">
+        <include refid="selectOrderDetailVo"/>
+        where order_detail_id = #{orderDetailId}
+    </select>
+        
+    <insert id="insertOrderDetail" parameterType="OrderDetail" useGeneratedKeys="true" keyProperty="orderDetailId">
+        insert into order_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+            <if test="productCnt != null">product_cnt,</if>
+            <if test="productPrice != null">product_price,</if>
+            <if test="weight != null">weight,</if>
+            <if test="feeMoney != null">fee_money,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+            <if test="productCnt != null">#{productCnt},</if>
+            <if test="productPrice != null">#{productPrice},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="feeMoney != null">#{feeMoney},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderDetail" parameterType="OrderDetail">
+        update order_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+            <if test="productCnt != null">product_cnt = #{productCnt},</if>
+            <if test="productPrice != null">product_price = #{productPrice},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="feeMoney != null">fee_money = #{feeMoney},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </trim>
+        where order_detail_id = #{orderDetailId}
+    </update>
+
+    <delete id="deleteOrderDetailByOrderDetailId" parameterType="Integer">
+        delete from order_detail where order_detail_id = #{orderDetailId}
+    </delete>
+
+    <delete id="deleteOrderDetailByOrderDetailIds" parameterType="String">
+        delete from order_detail where order_detail_id in 
+        <foreach item="orderDetailId" collection="array" open="(" separator="," close=")">
+            #{orderDetailId}
+        </foreach>
+    </delete>
+</mapper>

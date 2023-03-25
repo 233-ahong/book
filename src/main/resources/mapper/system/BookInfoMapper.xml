@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.BookInfoMapper">
+
+    <resultMap type="BookInfo" id="BookInfoResult">
+        <result property="bookId"    column="book_id"    />
+        <result property="bookCore"    column="book_core"    />
+        <result property="bookName"    column="book_name"    />
+        <result property="barCode"    column="bar_code"    />
+        <result property="bookPress"    column="book_press"    />
+        <result property="bookAuthor"    column="book_author"    />
+        <result property="coverAddress"    column="cover_address"    />
+        <result property="bookCategory"    column="book_category"    />
+        <result property="price"    column="price"    />
+        <result property="publishStatus"    column="publish_status"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="bookPage"    column="book_page"    />
+        <result property="descript"    column="descript"    />
+        <result property="indate"    column="indate"    />
+        <result property="modifiedTime"    column="modified_time"    />
+        <result property="bookRemaining" column="book_remaining" />
+    </resultMap>
+
+    <sql id="selectBookInfoVo">
+        select book_id, book_core, book_name, bar_code, book_press, book_author, cover_address, book_category, price,
+               publish_status, audit_status, book_page, descript, indate, modified_time, book_remaining from book_info
+    </sql>
+
+    <select id="selectBookInfoList" parameterType="BookInfo" resultMap="BookInfoResult">
+        <include refid="selectBookInfoVo"/>
+        <where>
+            <if test="bookCore != null  and bookCore != ''"> and book_core = #{bookCore}</if>
+            <if test="bookName != null  and bookName != ''"> and book_name like concat('%', #{bookName}, '%')</if>
+            <if test="barCode != null  and barCode != ''"> and bar_code = #{barCode}</if>
+            <if test="bookPress != null  and bookPress != ''"> and book_press like concat('%', #{bookPress}, '%')</if>
+            <if test="bookAuthor != null  and bookAuthor != ''"> and book_author = #{bookAuthor}</if>
+            <if test="coverAddress != null  and coverAddress != ''"> and cover_address = #{coverAddress}</if>
+            <if test="bookCategory != null "> and book_category = #{bookCategory}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="publishStatus != null "> and publish_status = #{publishStatus}</if>
+            <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
+            <if test="bookPage != null  and bookPage != ''"> and book_page = #{bookPage}</if>
+            <if test="descript != null  and descript != ''"> and descript = #{descript}</if>
+            <if test="indate != null "> and indate = #{indate}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+            <if test="true"> and book_remaining > 0 </if>
+        </where>
+    </select>
+
+    <select id="selectBookInfoByBookId" parameterType="Integer" resultMap="BookInfoResult">
+        <include refid="selectBookInfoVo"/>
+        where book_id = #{bookId}
+    </select>
+
+    <insert id="insertBookInfo" parameterType="BookInfo" useGeneratedKeys="true" keyProperty="bookId">
+        insert into book_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookCore != null and bookCore != ''">book_core,</if>
+            <if test="bookName != null and bookName != ''">book_name,</if>
+            <if test="barCode != null and barCode != ''">bar_code,</if>
+            <if test="bookPress != null and bookPress != ''">book_press,</if>
+            <if test="bookAuthor != null and bookAuthor != ''">book_author,</if>
+            <if test="coverAddress != null and coverAddress != ''">cover_address,</if>
+            <if test="bookCategory != null">book_category,</if>
+            <if test="price != null">price,</if>
+            <if test="publishStatus != null">publish_status,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="bookPage != null and bookPage != ''">book_page,</if>
+            <if test="descript != null and descript != ''">descript,</if>
+            <if test="indate != null">indate,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookCore != null and bookCore != ''">#{bookCore},</if>
+            <if test="bookName != null and bookName != ''">#{bookName},</if>
+            <if test="barCode != null and barCode != ''">#{barCode},</if>
+            <if test="bookPress != null and bookPress != ''">#{bookPress},</if>
+            <if test="bookAuthor != null and bookAuthor != ''">#{bookAuthor},</if>
+            <if test="coverAddress != null and coverAddress != ''">#{coverAddress},</if>
+            <if test="bookCategory != null">#{bookCategory},</if>
+            <if test="price != null">#{price},</if>
+            <if test="publishStatus != null">#{publishStatus},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="bookPage != null and bookPage != ''">#{bookPage},</if>
+            <if test="descript != null and descript != ''">#{descript},</if>
+            <if test="indate != null">#{indate},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBookInfo" parameterType="BookInfo">
+        update book_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookCore != null and bookCore != ''">book_core = #{bookCore},</if>
+            <if test="bookName != null and bookName != ''">book_name = #{bookName},</if>
+            <if test="barCode != null and barCode != ''">bar_code = #{barCode},</if>
+            <if test="bookPress != null and bookPress != ''">book_press = #{bookPress},</if>
+            <if test="bookAuthor != null and bookAuthor != ''">book_author = #{bookAuthor},</if>
+            <if test="coverAddress != null and coverAddress != ''">cover_address = #{coverAddress},</if>
+            <if test="bookCategory != null">book_category = #{bookCategory},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="publishStatus != null">publish_status = #{publishStatus},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="bookPage != null and bookPage != ''">book_page = #{bookPage},</if>
+            <if test="descript != null and descript != ''">descript = #{descript},</if>
+            <if test="indate != null">indate = #{indate},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+            <if test="bookRemaining != null ">book_remaining = #{bookRemaining}</if>
+        </trim>
+        where book_id = #{bookId}
+    </update>
+
+    <update id="modifyBookInventory" parameterType="int">
+        update book_info set book_remaining = book_remaining-1
+        where book_id = #{id}
+    </update>
+
+    <delete id="deleteBookInfoByBookId" parameterType="Integer">
+        delete from book_info where book_id = #{bookId}
+    </delete>
+
+    <delete id="deleteBookInfoByBookIds" parameterType="String">
+        delete from book_info where book_id in
+        <foreach item="bookId" collection="array" open="(" separator="," close=")">
+            #{bookId}
+        </foreach>
+    </delete>
+
+    <update id="returnBookByIds" parameterType="String" >
+        update book_info set book_remaining = book_remaining+1
+        where book_id in
+        <foreach item="bookIds" collection="array" open="(" separator="," close=")">
+            #{bookIds}
+        </foreach>
+    </update>
+</mapper>

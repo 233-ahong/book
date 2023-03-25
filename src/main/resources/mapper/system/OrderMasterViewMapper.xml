@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.OrderMasterViewMapper">
+
+    <resultMap type="OrderMasterView" id="OrderMasterViewResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="orderSn"    column="order_sn"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="shippingUser"    column="shipping_user"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="district"    column="district"    />
+        <result property="address"    column="address"    />
+        <result property="orderMoney"    column="order_money"    />
+        <result property="districtMoney"    column="district_money"    />
+        <result property="shippingMoney"    column="shipping_money"    />
+        <result property="paymentMoney"    column="payment_money"    />
+        <result property="shippingCompName"    column="shipping_comp_name"    />
+        <result property="shippingSn"    column="shipping_sn"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="shippingTime"    column="shipping_time"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="receiveTime"    column="receive_time"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="invoiceTime"    column="invoice_time"    />
+        <result property="modifiedTime"    column="modified_time"    />
+        <result property="coverAddress" column="cover_address"/>
+    </resultMap>
+
+    <resultMap id="OrderMasterViewOrderDetailResult" type="OrderMasterView" extends="OrderMasterViewResult">
+        <association property="orderDetailList" javaType="OrderDetail" resultMap="OrderDetailResult"/>
+    </resultMap>
+
+    <resultMap type="OrderDetail" id="OrderDetailResult">
+        <result property="orderDetailId"    column="order_detail_id"    />
+        <result property="orderId"    column="b.order_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="productCnt"    column="product_cnt"    />
+        <result property="productPrice"    column="product_price"    />
+    </resultMap>
+
+    <sql id="selectOrderMasterViewVo">
+        select order_id, order_sn, customer_id, shipping_user, province, city, district, address, order_money, district_money, shipping_money, payment_money, shipping_comp_name, shipping_sn, create_time, shipping_time, pay_time, receive_time, order_status, invoice_time, modified_time from order_master
+    </sql>
+
+    <select id="selectOrderMasterViewList" parameterType="OrderMasterView" resultMap="OrderMasterViewResult">
+        <include refid="selectOrderMasterViewVo"/>
+        <where>
+            <if test="orderSn != null "> and order_sn = #{orderSn}</if>
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="shippingUser != null  and shippingUser != ''"> and shipping_user = #{shippingUser}</if>
+            <if test="province != null "> and province = #{province}</if>
+            <if test="city != null "> and city = #{city}</if>
+            <if test="district != null "> and district = #{district}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="orderMoney != null "> and order_money = #{orderMoney}</if>
+            <if test="districtMoney != null "> and district_money = #{districtMoney}</if>
+            <if test="shippingMoney != null "> and shipping_money = #{shippingMoney}</if>
+            <if test="paymentMoney != null "> and payment_money = #{paymentMoney}</if>
+            <if test="shippingCompName != null  and shippingCompName != ''"> and shipping_comp_name like concat('%', #{shippingCompName}, '%')</if>
+            <if test="shippingSn != null  and shippingSn != ''"> and shipping_sn = #{shippingSn}</if>
+            <if test="shippingTime != null "> and shipping_time = #{shippingTime}</if>
+            <if test="payTime != null "> and pay_time = #{payTime}</if>
+            <if test="receiveTime != null "> and receive_time = #{receiveTime}</if>
+            <if test="orderStatus != null "> and order_status = #{orderStatus}</if>
+            <if test="invoiceTime != null  and invoiceTime != ''"> and invoice_time = #{invoiceTime}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+        </where>
+    </select>
+
+    <select id="selectOrderMasterViewByUserId" parameterType="Long" resultMap="OrderMasterViewOrderDetailResult">
+        select a.* ,b.*,c.cover_address from order_master a ,order_detail b,book_info c
+        where b.order_id = a.order_id and c.book_id = b.product_id and a.customer_id = #{userId}
+    </select>
+
+    <insert id="insertOrderMasterView" parameterType="OrderMasterView" useGeneratedKeys="true" keyProperty="orderId">
+        insert into order_master
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderSn != null">order_sn,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="shippingUser != null and shippingUser != ''">shipping_user,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="district != null">district,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="orderMoney != null">order_money,</if>
+            <if test="districtMoney != null">district_money,</if>
+            <if test="shippingMoney != null">shipping_money,</if>
+            <if test="paymentMoney != null">payment_money,</if>
+            <if test="shippingCompName != null">shipping_comp_name,</if>
+            <if test="shippingSn != null">shipping_sn,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="shippingTime != null">shipping_time,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="receiveTime != null">receive_time,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="invoiceTime != null">invoice_time,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderSn != null">#{orderSn},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="shippingUser != null and shippingUser != ''">#{shippingUser},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="district != null">#{district},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="orderMoney != null">#{orderMoney},</if>
+            <if test="districtMoney != null">#{districtMoney},</if>
+            <if test="shippingMoney != null">#{shippingMoney},</if>
+            <if test="paymentMoney != null">#{paymentMoney},</if>
+            <if test="shippingCompName != null">#{shippingCompName},</if>
+            <if test="shippingSn != null">#{shippingSn},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="shippingTime != null">#{shippingTime},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="receiveTime != null">#{receiveTime},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="invoiceTime != null">#{invoiceTime},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOrderMasterView" parameterType="OrderMasterView">
+        update order_master
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderSn != null">order_sn = #{orderSn},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="shippingUser != null and shippingUser != ''">shipping_user = #{shippingUser},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="district != null">district = #{district},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="orderMoney != null">order_money = #{orderMoney},</if>
+            <if test="districtMoney != null">district_money = #{districtMoney},</if>
+            <if test="shippingMoney != null">shipping_money = #{shippingMoney},</if>
+            <if test="paymentMoney != null">payment_money = #{paymentMoney},</if>
+            <if test="shippingCompName != null">shipping_comp_name = #{shippingCompName},</if>
+            <if test="shippingSn != null">shipping_sn = #{shippingSn},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="shippingTime != null">shipping_time = #{shippingTime},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="receiveTime != null">receive_time = #{receiveTime},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="invoiceTime != null">invoice_time = #{invoiceTime},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteOrderMasterViewByOrderId" parameterType="Integer">
+        delete from order_master where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteOrderMasterViewByOrderIds" parameterType="String">
+        delete from order_master where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteOrderDetailByOrderIds" parameterType="String">
+        delete from order_detail where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteOrderDetailByOrderId" parameterType="Integer">
+        delete from order_detail where order_id = #{orderId}
+    </delete>
+
+    <insert id="batchOrderDetail">
+        insert into order_detail( order_detail_id, order_id, product_id, product_name, product_cnt, product_price, weight, fee_money, modified_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.orderDetailId}, #{item.orderId}, #{item.productId}, #{item.productName}, #{item.productCnt}, #{item.productPrice}, #{item.weight}, #{item.feeMoney}, #{item.modifiedTime})
+        </foreach>
+    </insert>
+</mapper>

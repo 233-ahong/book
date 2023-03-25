@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.BookSortMapper">
+
+    <resultMap type="BookSort" id="BookSortResult">
+        <result property="sortId"    column="sort_id"    />
+        <result property="sortLabel"    column="sort_label"    />
+        <result property="sortValue"    column="sort_value"    />
+        <result property="cssClass"    column="css_class"    />
+        <result property="listClass"    column="list_class"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBookSortVo">
+        select sort_id, sort_label, sort_value, css_class, list_class, is_default, status, remark from book_sort
+    </sql>
+
+    <select id="selectBookSortList" parameterType="BookSort" resultMap="BookSortResult">
+        <include refid="selectBookSortVo"/>
+        <where>
+            <if test="sortLabel != null  and sortLabel != ''"> and sort_label = #{sortLabel}</if>
+            <if test="sortValue != null  and sortValue != ''"> and sort_value = #{sortValue}</if>
+            <if test="cssClass != null  and cssClass != ''"> and css_class = #{cssClass}</if>
+            <if test="listClass != null  and listClass != ''"> and list_class = #{listClass}</if>
+            <if test="isDefault != null  and isDefault != ''"> and is_default = #{isDefault}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectBookSortBySortId" parameterType="Long" resultMap="BookSortResult">
+        <include refid="selectBookSortVo"/>
+        where sort_id = #{sortId}
+    </select>
+
+    <insert id="insertBookSort" parameterType="BookSort" useGeneratedKeys="true" keyProperty="sortId">
+        insert into book_sort
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sortLabel != null">sort_label,</if>
+            <if test="sortValue != null">sort_value,</if>
+            <if test="cssClass != null">css_class,</if>
+            <if test="listClass != null">list_class,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sortLabel != null">#{sortLabel},</if>
+            <if test="sortValue != null">#{sortValue},</if>
+            <if test="cssClass != null">#{cssClass},</if>
+            <if test="listClass != null">#{listClass},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBookSort" parameterType="BookSort">
+        update book_sort
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sortLabel != null">sort_label = #{sortLabel},</if>
+            <if test="sortValue != null">sort_value = #{sortValue},</if>
+            <if test="cssClass != null">css_class = #{cssClass},</if>
+            <if test="listClass != null">list_class = #{listClass},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where sort_id = #{sortId}
+    </update>
+
+    <delete id="deleteBookSortBySortId" parameterType="Long">
+        delete from book_sort where sort_id = #{sortId}
+    </delete>
+
+    <delete id="deleteBookSortBySortIds" parameterType="String">
+        delete from book_sort where sort_id in
+        <foreach item="sortId" collection="array" open="(" separator="," close=")">
+            #{sortId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.UserInfMapper">
+
+    <resultMap type="UserInf" id="UserInfResult">
+        <result property="userInfId"    column="user_inf_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="password"    column="password"    />
+        <result property="userStats"    column="user_stats"    />
+        <result property="userAvatar"    column="user_avatar"    />
+        <result property="mobilePhone"    column="mobile_phone"    />
+        <result property="userEmail"    column="user_email"    />
+        <result property="gender"    column="gender"    />
+        <result property="registerTime"    column="register_time"    />
+        <result property="modifiedTime"    column="modified_time"    />
+        <result property="userRole"    column="user_role"    />
+    </resultMap>
+
+    <sql id="selectUserInfVo">
+        select user_inf_id, user_name, nick_name, password, user_stats, user_avatar, mobile_phone, user_email, gender, register_time, modified_time, user_role from user_inf
+    </sql>
+
+    <select id="selectUserInfList" parameterType="UserInf" resultMap="UserInfResult">
+        <include refid="selectUserInfVo"/>
+        <where>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="userStats != null "> and user_stats = #{userStats}</if>
+            <if test="userAvatar != null  and userAvatar != ''"> and user_avatar = #{userAvatar}</if>
+            <if test="mobilePhone != null  and mobilePhone != ''"> and mobile_phone = #{mobilePhone}</if>
+            <if test="userEmail != null  and userEmail != ''"> and user_email = #{userEmail}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="registerTime != null "> and register_time = #{registerTime}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+            <if test="userRole != null  and userRole != ''"> and user_role = #{userRole}</if>
+        </where>
+    </select>
+
+    <select id="selectUserInfByUserId" parameterType="Integer" resultMap="UserInfResult">
+        <include refid="selectUserInfVo"/>
+        where user_inf_id = #{userInfId}
+    </select>
+
+    <insert id="insertUserInf" parameterType="UserInf" useGeneratedKeys="true" keyProperty="userInfId">
+        insert into user_inf
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="nickName != null and nickName != ''">nick_name,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="userStats != null">user_stats,</if>
+            <if test="userAvatar != null">user_avatar,</if>
+            <if test="mobilePhone != null and mobilePhone != ''">mobile_phone,</if>
+            <if test="userEmail != null">user_email,</if>
+            <if test="gender != null">gender,</if>
+            <if test="registerTime != null">register_time,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+            <if test="userRole != null">user_role,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="nickName != null and nickName != ''">#{nickName},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="userStats != null">#{userStats},</if>
+            <if test="userAvatar != null">#{userAvatar},</if>
+            <if test="mobilePhone != null and mobilePhone != ''">#{mobilePhone},</if>
+            <if test="userEmail != null">#{userEmail},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="registerTime != null">#{registerTime},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+            <if test="userRole != null">#{userRole},</if>
+        </trim>
+    </insert>
+
+    <update id="updateUserInf" parameterType="UserInf">
+        update user_inf
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="userStats != null">user_stats = #{userStats},</if>
+            <if test="userAvatar != null">user_avatar = #{userAvatar},</if>
+            <if test="mobilePhone != null and mobilePhone != ''">mobile_phone = #{mobilePhone},</if>
+            <if test="userEmail != null">user_email = #{userEmail},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="registerTime != null">register_time = #{registerTime},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+            <if test="userRole != null">user_role = #{userRole},</if>
+        </trim>
+        where user_inf_id = #{userInfId}
+    </update>
+
+    <delete id="deleteUserInfByUserInfId" parameterType="Integer">
+        delete from user_inf where user_inf_id = #{userInfId}
+    </delete>
+
+    <delete id="deleteUserInfByUserInfIds" parameterType="String">
+        delete from user_inf where user_inf_id in
+        <foreach item="userInfId" collection="array" open="(" separator="," close=")">
+            #{userInfId}
+        </foreach>
+    </delete>
+
+    <select id="selectUserInfByUserLoginName" parameterType="String" resultMap="UserInfResult">
+        <include refid="selectUserInfVo"/>
+        where user_name = #{name}
+    </select>
+
+    <select id="selectUserInfByPhone" parameterType="String" resultMap="UserInfResult">
+        <include refid="selectUserInfVo"/>
+        where mobile_phone = #{phone}
+    </select>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.BorrowViewMapper">
+    <resultMap type="BorrowView" id="BorrowViewResult">
+        <result property="borrowId"    column="borrow_id"    />
+        <result property="bookId" column="book_id" />
+        <result property="bookName"    column="book_name"    />
+        <result property="borrowingTime"    column="borrowing_time"    />
+        <result property="modifiedTime"    column="modified_time"    />
+        <result property="borrowState"    column="borrow_state"    />
+        <result property="coverAddress" column="cover_address" />
+    </resultMap>
+    <select id="selectBorrowViewList" parameterType="BorrowView" resultMap="BorrowViewResult" >
+        select b.borrow_id,bi.book_name,bi.book_id ,bi.cover_address, b.borrowing_time ,b.borrow_state ,b.modified_time from
+        book_info bi ,borrow b
+        <where>
+            <if test="bookName != null  and bookName != ''"> and b.book_name like concat('%', #{bookName}, '%')</if>
+            <if test="borrowState != null "> and borrow_state = #{borrowState}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="true">and b.book_id = bi.book_id</if>
+        </where>
+        ORDER BY borrow_id DESC
+    </select>
+</mapper>

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d2143e9"],{afb0:function(n,e,o){"use strict";o.r(e);var t=function(){var n=this,e=n._self._c;return e("div",[n._v(" 首页 ")])},a=[],s={name:"BookInfo",methods:{}},u=s,c=o("2877"),d=Object(c["a"])(u,t,a,!1,null,"543bda19",null);e["default"]=d.exports}}]);
+//# sourceMappingURL=chunk-2d2143e9.2061577b.js.map

@@ -1,0 +1,54 @@
+version : '3.3'
+services:
+  book-redis:
+    container_name: book-redis
+    image: redis
+    build:
+      context: ./redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/conf/redis.conf:/home/ruoyi/redis/redis.conf
+      - ./redis/data:/data
+    command: redis-server /home/ruoyi/redis/redis.conf
+  book-nginx-admin:
+    container_name: book-nginx-admin
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    links:
+      - book-admin
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx/dist:/home/ruoyi/projects/ruoyi-ui
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - book-admin
+  book-nginx-ui:
+    container_name: book-nginx-ui
+    build:
+      context: ./nginx1
+      dockerfile: Dockerfile
+    links:
+      - book-admin
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx1/dist:/home/ruoyi/projects/ruoyi-ui
+      - ./nginx1/logs:/var/log/nginx
+      - ./nginx1/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - book-admin
+  book-admin:
+    container_name: book-admin
+    build:
+      context: ./java
+      dockerfile: Dockerfile
+    links:
+      - book-redis
+    ports:
+      - "8081:8081"
+    depends_on:
+      - book-redis

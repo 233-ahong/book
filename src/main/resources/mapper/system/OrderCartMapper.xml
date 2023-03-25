@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.OrderCartMapper">
+
+    <resultMap type="OrderCart" id="OrderCartResult">
+        <result property="cartId"    column="cart_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="productAmount"    column="product_amount"    />
+        <result property="price"    column="price"    />
+        <result property="addTime"    column="add_time"    />
+        <result property="modifiedTime"    column="modified_time"    />
+    </resultMap>
+
+    <sql id="selectOrderCartVo">
+        select cart_id, user_id, book_id, product_amount, price, add_time, modified_time from order_cart
+    </sql>
+
+    <select id="selectOrderCartList" parameterType="OrderCart" resultMap="OrderCartResult">
+        <include refid="selectOrderCartVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="bookId != null "> and book_id = #{bookId}</if>
+            <if test="productAmount != null "> and product_amount = #{productAmount}</if>
+            <if test="price != null "> and price = #{price}</if>
+        </where>
+    </select>
+
+    <select id="selectOrderCartByCartId" parameterType="Integer" resultMap="OrderCartResult">
+        <include refid="selectOrderCartVo"/>
+        where cart_id = #{cartId}
+    </select>
+
+    <insert id="insertOrderCart" parameterType="OrderCart" useGeneratedKeys="true" keyProperty="cartId">
+        insert into order_cart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="bookId != null">book_id,</if>
+            <if test="productAmount != null">product_amount,</if>
+            <if test="price != null">price,</if>
+            <if test="addTime != null">add_time,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="bookId != null">#{bookId},</if>
+            <if test="productAmount != null">#{productAmount},</if>
+            <if test="price != null">#{price},</if>
+            <if test="addTime != null">#{addTime},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOrderCart" parameterType="OrderCart">
+        update order_cart
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="productAmount != null">product_amount = #{productAmount},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="addTime != null">add_time = #{addTime},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </trim>
+        where cart_id = #{cartId}
+    </update>
+
+    <delete id="deleteOrderCartByCartId" parameterType="Integer">
+        delete from order_cart where cart_id = #{cartId}
+    </delete>
+
+    <delete id="deleteOrderCartByCartIds" parameterType="String">
+        delete from order_cart where cart_id in
+        <foreach item="cartId" collection="array" open="(" separator="," close=")">
+            #{cartId}
+        </foreach>
+    </delete>
+</mapper>

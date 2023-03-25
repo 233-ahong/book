@@ -1,0 +1,2 @@
+2023/03/25 14:36:10 [emerg] 1#1: host not found in upstream "book-admin" in /etc/nginx/nginx.conf:28
+2023/03/25 14:36:27 [emerg] 1#1: host not found in upstream "book-admin" in /etc/nginx/nginx.conf:28

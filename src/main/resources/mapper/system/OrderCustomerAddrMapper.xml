@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.OrderCustomerAddrMapper">
+    
+    <resultMap type="OrderCustomerAddr" id="OrderCustomerAddrResult">
+        <result property="customerAddrId"    column="customer_addr_id"    />
+        <result property="customerId"    column="customer_id"    />
+        <result property="zip"    column="zip"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="district"    column="district"    />
+        <result property="address"    column="address"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="modifiedTime"    column="modified_time"    />
+    </resultMap>
+
+    <sql id="selectOrderCustomerAddrVo">
+        select customer_addr_id, customer_id, zip, province, city, district, address, is_default, modified_time from order_customer_addr
+    </sql>
+
+    <select id="selectOrderCustomerAddrList" parameterType="OrderCustomerAddr" resultMap="OrderCustomerAddrResult">
+        <include refid="selectOrderCustomerAddrVo"/>
+        <where>  
+            <if test="customerId != null "> and customer_id = #{customerId}</if>
+            <if test="zip != null "> and zip = #{zip}</if>
+            <if test="province != null "> and province = #{province}</if>
+            <if test="city != null "> and city = #{city}</if>
+            <if test="district != null "> and district = #{district}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="isDefault != null "> and is_default = #{isDefault}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderCustomerAddrByCustomerAddrId" parameterType="Integer" resultMap="OrderCustomerAddrResult">
+        <include refid="selectOrderCustomerAddrVo"/>
+        where customer_addr_id = #{customerAddrId}
+    </select>
+        
+    <insert id="insertOrderCustomerAddr" parameterType="OrderCustomerAddr" useGeneratedKeys="true" keyProperty="customerAddrId">
+        insert into order_customer_addr
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">customer_id,</if>
+            <if test="zip != null">zip,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="district != null">district,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">#{customerId},</if>
+            <if test="zip != null">#{zip},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="district != null">#{district},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderCustomerAddr" parameterType="OrderCustomerAddr">
+        update order_customer_addr
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="zip != null">zip = #{zip},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="district != null">district = #{district},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </trim>
+        where customer_addr_id = #{customerAddrId}
+    </update>
+
+    <delete id="deleteOrderCustomerAddrByCustomerAddrId" parameterType="Integer">
+        delete from order_customer_addr where customer_addr_id = #{customerAddrId}
+    </delete>
+
+    <delete id="deleteOrderCustomerAddrByCustomerAddrIds" parameterType="String">
+        delete from order_customer_addr where customer_addr_id in 
+        <foreach item="customerAddrId" collection="array" open="(" separator="," close=")">
+            #{customerAddrId}
+        </foreach>
+    </delete>
+</mapper>

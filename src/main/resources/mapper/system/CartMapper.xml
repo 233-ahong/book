@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ah.book.mapper.CartMapper">
+
+    <resultMap id="CartResult" type="Cart">
+        <result property="cartId" column="cart_id" />
+        <result property="bookId" column="book_id" />
+        <result property="price" column="price"/>
+        <result property="productAmount" column="product_amount"/>
+        <result property="bookName" column="book_name"/>
+        <result property="bookPress" column="book_press"/>
+        <result property="coverAddress" column="cover_address" />
+    </resultMap>
+
+    <select id="selectCartListByUserId" resultMap="CartResult" parameterType="Long">
+        select b.price, b.book_id, b.book_name,b.book_press,b.cover_address, o.cart_id, o.product_amount
+        from order_cart o ,book_info b
+        where o.book_id =b.book_id and o.user_id = #{userId}
+    </select>
+
+
+</mapper>
